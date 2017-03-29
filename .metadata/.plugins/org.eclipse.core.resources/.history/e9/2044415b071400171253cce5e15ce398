@@ -1,0 +1,26 @@
+var express = require('express')
+var router = express.Router();
+var app = express();
+
+///* GET users listing. */
+//router.get('/', function(req, res) {
+//	res.send('respond with a resource');
+//})
+
+
+app.param('user', function(req, res, next, id) {
+
+	  // try to get the user details from the User model and attach it to the request object
+	  User.find(id, function(err, user) {
+	    if (err) {
+	      next(err);
+	    } else if (user) {
+	      req.user = user;
+	      next();
+	    } else {
+	      next(new Error('failed to load user'));
+	    }
+	  });
+	});
+
+module.exports = router;

@@ -1,0 +1,20 @@
+var express = require('express')
+var router = express.Router();
+
+///* GET users listing. */
+//router.get('/', function(req, res) {
+//	res.send('respond with a resource');
+//})
+
+
+router.get('/:id*', function(req, res) {
+	
+	 res.json({
+	        id: req.param('id'),
+	        path: req.param(0)
+	    });
+// res.send(req.query.id)
+//	res.render(id); //working
+
+});
+module.exports = router;

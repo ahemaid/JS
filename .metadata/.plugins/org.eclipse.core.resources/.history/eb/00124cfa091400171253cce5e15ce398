@@ -1,0 +1,26 @@
+var express = require('express')
+var router = express.Router();
+var app = express();
+
+///* GET users listing. */
+//router.get('/', function(req, res) {
+//	res.send('respond with a resource');
+//})
+
+
+app.param('keyword', function(req, res, next, id) {
+
+	  // try to get the user details from the User model and attach it to the request object
+	keyword.find(id, function(err, keyword) {
+	    if (err) {
+	      next(err);
+	    } else if (keyword) {
+	      req.keyword = keyword;
+	      next();
+	    } else {
+	      next(new Error('failed to load keyword'));
+	    }
+	  });
+	});
+
+module.exports = router;

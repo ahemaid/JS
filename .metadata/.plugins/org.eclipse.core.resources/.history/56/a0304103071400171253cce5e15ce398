@@ -1,0 +1,15 @@
+var express = require('express')
+var router = express.Router();
+
+
+///* GET users listing. */
+//router.get('/', function(req, res) {
+//	res.send('respond with a resource');
+//})
+
+
+router.get('/p', function(req, res) {
+  res.send("keyword is set to " + req.query.keyword);
+});
+
+module.exports = router;

@@ -1,0 +1,24 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0",
+    "favicons": "^4.8.3",
+    "fs": "^0.0.2",
+    "fs-extra": "^0.30.0",
+    "morgan": "^1.7.0",
+    "query-string": "^4.3.2",
+    "rdfstore": "^0.9.17",
+    "request": "^2.74.0",
+    "serve-favicon": "^2.3.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

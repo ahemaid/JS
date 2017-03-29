@@ -1,0 +1,97 @@
+var express = require('express');
+var router = express.Router();
+var rdfstore = require('rdfstore'),
+  fs = require('fs-extra');
+
+/* GET home page. */
+
+router.get('/', function(req, res) {
+
+  console.log(req);
+  console.log('test -');
+  var titleNew = 'first';
+  rdfstore.create(function(err, store) {
+    var rdf = fs.readFileSync(
+      './routes/SingleVoc.ttl'
+    ).toString();
+    titleNew = 'second';
+    store.load('text/turtle', rdf, function(s, d) {
+      titleNew = 'saecond';
+      var query =
+        `PREFIX owl: <http://www.w3.org/2002/07/owl#>
+         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+
+        SELECT ?sClass ?p ?o WHERE {
+                          ?sClass a <http://www.w3.org/2002/07/owl#Class>.
+                          
+
+                   } `;
+
+      store.execute(query, function(success, results) {
+        //console.log(results);
+        titleNew = 'MobiVoc';
+        console.log(results.length);
+
+        var result =
+          " <table id='tableResult' class='table table-striped table-bordered' cellspacing='0'  border='5' width='100%'>";
+
+        // changes here
+        result +="<head><tr>      <th>Concept</th> <th>Type</th> <th>URI</th>         </tr>      </head>";
+        //result +="<tr> <td> head is here </td> </tr>";
+        
+        // end of changes 
+        
+        
+        for (var i = 0; i < results.length; i++) {
+          result += "<tr>";
+
+          var url = results[i].s.value;
+          var lastPart = url.split("/").pop();
+
+          result += "<td>" + results[i].sClass.value + "</td>";
+ 
+          result += "<td ><a href='http://www.stackoverflow.com'>" +lastPart+ "</a></td>";
+
+          result += "<td> <h1> Class </h1></td>";
+         // result += "<td>" + results[i].p.value + "</td>";
+         // result += "<td>" + results[i].o.value + "</td>";
+
+          result += "</tr>";
+        }
+        
+//        
+//        switch(expression) {
+//        case n:
+//            result +="<head><tr>      <th>Concept</th>  <th>URI</th>        </tr>      </thead>";
+//
+//            code block
+//            break;
+//        case n:
+//            result +="<head><tr>      <th>Concept</th>  <th>URI</th>        </tr>      </thead>";
+//
+//            code block
+//            break;
+//        default:
+//            code block
+//    } 
+        result +="<head><tr>      <th>Concept</th>  <th>URI</th>        </tr>      </thead>";
+
+        
+        result += "</table>";
+
+        //console.log(result);
+
+        titleNew = titleNew;
+        res.render('index', {
+          title: titleNew,
+          resultTable: result
+        });
+      });
+
+    });
+    //console.log(err);
+  });
+
+});
+
+module.exports = router;

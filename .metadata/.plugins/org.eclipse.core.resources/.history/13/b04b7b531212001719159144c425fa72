@@ -1,0 +1,166 @@
+var express = require('express');
+var router = express.Router();
+var rdfstore = require('rdfstore'),
+  fs = require('fs-extra');
+
+/* GET home page. */
+
+router.get('/', function(req, res) {
+
+  console.log(req);
+  console.log('test -');
+  var titleNew = 'first';
+  rdfstore.create(function(err, store) {
+    var rdf = fs.readFileSync(
+      './routes/SingleVoc.ttl'
+    ).toString();
+    titleNew = 'second';
+    store.load('text/turtle', rdf, function(s, d) {
+      titleNew = 'saecond';
+      var query =
+        `PREFIX owl: <http://www.w3.org/2002/07/owl#>
+         PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+
+        SELECT ?sClass ?sDatatypeProperty ?sObjectProperty WHERE {
+                          ?sClass a <http://www.w3.org/2002/07/owl#Class>.
+                          ?sDatatypeProperty a <http://www.w3.org/2002/07/owl#DatatypeProperty>.
+    	  				  ?sObjectProperty a <http://www.w3.org/2002/07/owl#ObjectProperty>.
+                   } `;
+
+      store.execute(query, function(success, results) {
+        console.log(results);
+        titleNew = 'MobiVoc';
+        console.log(results.length);
+
+        var result =
+          " <table id='tableResult' class='table table-striped table-bordered' cellspacing='0'  border='5' width='100%'>";
+
+        // changes here
+        result +="<head><tr>      <th>Concept</th> <th>Type</th> <th>URI</th>         </tr>      </head>";
+        //result +="<tr> <td> head is here </td> </tr>";
+        
+        // end of changes 
+        
+        // TODO store owlTpes in a vector to call them 
+        
+        //var cars = ["Saab", "Volvo", "BMW"];
+
+        // +++ results of DatatypeProperty
+        for (var i = 0; i < results.length; i++) {
+          result += "<tr>";
+
+          var uri = results[i].sDatatypeProperty.value;
+          var lastPart = uri.split("/").pop();
+
+          result += "<td ><a href='http://www.stackoverflow.com'>" +lastPart+ "</a></td>";
+          result += "<td>  DataType Property	 </td>";
+
+          result += "<td>" + uri+ "</td>";
+          result += "</tr>";
+        }
+        /// --- results of DatatypeProperty
+        
+        
+        // +++ results of ObjectProperty
+        for (var i = 0; i < results.length; i++) {
+          result += "<tr>";
+
+          var uri = results[i].sObjectProperty.value;
+          var lastPart = uri.split("/").pop();
+
+ 
+          result += "<td ><a href='http://www.stackoverflow.com'>" +lastPart+ "</a></td>";
+
+          result += "<td>  Object Property </td>";
+          result += "<td>" + uri+ "</td>";
+          result += "</tr>";
+        }
+        /// --- results of ObjectProperty
+        
+        
+        // +++ results of Class
+        for (var i = 0; i < results.length; i++) {
+          result += "<tr>";
+
+          var uri = results[i].sClass.value;
+          var lastPart = uri.split("/").pop();
+
+ 
+          result += "<td ><a href='http://www.stackoverflow.com'>" +lastPart+ "</a></td>";
+
+          result += "<td>  Class </td>";
+          result += "<td>" + uri+ "</td>";
+          result += "</tr>";
+        }
+        /// --- results of Class
+        
+        
+        // +++ results of Class
+        for (var i = 0; i < results.length; i++) {
+          result += "<tr>";
+
+          var uri = results[i].sClass.value;
+          var lastPart = uri.split("/").pop();
+
+ 
+          result += "<td ><a href='http://www.stackoverflow.com'>" +lastPart+ "</a></td>";
+
+          result += "<td>  Class </td>";
+          result += "<td>" + uri+ "</td>";
+          result += "</tr>";
+        }
+        /// --- results of Class
+        
+        // +++ results of Class
+        for (var i = 0; i < results.length; i++) {
+          result += "<tr>";
+
+          var uri = results[i].sClass.value;
+          var lastPart = uri.split("/").pop();
+
+ 
+          result += "<td ><a href='http://www.stackoverflow.com'>" +lastPart+ "</a></td>";
+
+          result += "<td>  Class </td>";
+          result += "<td>" + uri+ "</td>";
+          result += "</tr>";
+        }
+        /// --- results of Class
+        
+        
+        
+//        
+//        switch(expression) {
+//        case n:
+//            result +="<head><tr>      <th>Concept</th>  <th>URI</th>        </tr>      </thead>";
+//
+//            code block
+//            break;
+//        case n:
+//            result +="<head><tr>      <th>Concept</th>  <th>URI</th>        </tr>      </thead>";
+//
+//            code block
+//            break;
+//        default:
+//            code block
+//    } 
+
+        
+        result += "</table>";
+
+        //console.log(result);
+
+        titleNew = titleNew;
+        res.render('index', {
+          title: titleNew,
+          resultTable: result
+        });
+      });
+
+    });
+    //console.log(err);
+  });
+
+});
+
+module.exports = router;
