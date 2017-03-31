@@ -1,124 +1,120 @@
 var express = require('express');
 var router = express.Router();
 var rdfstore = require('rdfstore'),
-  fs = require('fs-extra');
+fs = require('fs-extra');
 
 /* GET home page. */
 
 router.get('/', function(req, res) {
 
-  console.log(req);
-  console.log('test -');
-  var titleNew = 'first';
-  rdfstore.create(function(err, store) {
-    var rdf = fs.readFileSync(
-      './routes/SingleVoc.ttl'
-    ).toString();
-    titleNew = 'second';
-    store.load('text/turtle', rdf, function(s, d) {
-      titleNew = 'saecond';
-      var query =
-        `PREFIX owl: <http://www.w3.org/2002/07/owl#>
-         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>       
-        SELECT DISTINCT ?s   WHERE {
-                            ?s a ?o.
-                   } ORDER BY  ?s`;
-//
-//      ?sClass a <http://www.w3.org/2002/07/owl#Class>.
-//
-//		  ?sObjectProperty a <http://www.w3.org/2002/07/owl#ObjectProperty>.
+	console.log(req);
+	console.log('test -');
+	var titleNew = 'first';
+	rdfstore.create(function(err, store) {
+		var rdf = fs.readFileSync(
+				'./routes/SingleVoc.ttl'
+		).toString();
+		titleNew = 'second';
+		store.load('text/turtle', rdf, function(s, d) {
+			titleNew = 'saecond';
+			var query =
+				`PREFIX owl: <http://www.w3.org/2002/07/owl#>
+				PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>       
+				SELECT DISTINCT ?s ?o  WHERE {
+				?s a ?o.
 
-      store.execute(query, function(success, results) {
-        //console.log(results);
-        titleNew = 'MobiVoc';
-        console.log(results.length);
-        
- 
-           var result =
-          " <table id='tableResult' class='table table-striped table-bordered' cellspacing='0'  border='5' width='100%'>";
+				} ORDER BY  ?s`;
 
-        // changes here
-          result +="<head><tr>  <th>Concept</th>  <th>URI</th> </tr> </head>";
-        //result +="<tr> <td> head is here </td> </tr>";
-                
-        // TODO store owlTpes in a vector to call them 
-        
-        // +++ results of DatatypeProperty
-          for (var i = 0; i < results.length; i++) {
-          result += "<tr>";
+			store.execute(query, function(success, results) {
+				console.log(results);
+				titleNew = 'MobiVoc';
+				console.log(results.length);
+				
+				fs.writeFile("/tmp/test", "Hey there!", function(results) {
+				    if(results) {
+				        return console.log(results);
+				    }
 
-          var uri = results[i].s.value;
-//          var object = results[i].o.value;
-//          object = object.split("#").pop();
-//          
-//          if (object != "DatatypeProperty" | "Property" | "Class" | "ObjectProperty") {
-//        	  object = "Individual";
-//        	}
-          
-          var concept = uri.split("/").pop();
-          concept = concept.replace('#','');
-//
-          result += "<td ><a href=\"vocab?id="+uri+"\" target=\"_top\"'>" +concept + "</a></td>";
-          //          result += "<td>  " + object+ " 	 </td>";
+				    console.log("The file was saved!");
+				}); 
 
-          result += "<td>" + uri+ "</td>";
-          result += "</tr>";
-          
-          
-          //result += "<tr><td><div id=\"divDetails\" colspan=\"100\"> hsdlfksd;klfjkldj f</div></td></tr>";
-        
-              
-           
-           
-           
-//        // Get the leaderName(s) of the 10 cities 
-//           var query2 =
-//        	   "PREFIX owl: <http://www.w3.org/2002/07/owl#>"+
-//               "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"+       
-//               "SELECT DISTINCT ?p   WHERE {"+
-//               " ?uri ?p ?o."+
-//               " }" ; 
-//                   
-//               store.execute(query2, function(success, results2) {
-//               //console.log(results1);
-//               titleNew = 'MobiVoc2';
-//               console.log(results2.length);
-//               for ( i = 0; i < results.length; i++) {
-//               var object = results2[i].p.value;
-//               result += "<tr><td><div  >"+object+" f</div></td></tr>";
-//               }
-//           });
-//
-         }
-        result += "</table>";
-        
-        
-        /////////////////////////////
-   
-        
-        ///////////////////////////////
-     
-        //console.log(result);
+//				var data = [];
+//				var len = results.length;
+//				for (var i = 0; i < len; i++) {
+//					data.push({
+//						key: results[i].label,
+//						sortable: true,
+//						resizeable: true
+//					});
+//				}
 
-/////////////////////////////
-   
-        
-        ///////////////////////////////
-     
-        //console.log(result);
 
-         
-      titleNew = titleNew;
-      res.render('index', {
-        title: titleNew,
-        resultTable: result
-      });
-    
+				var result =
+					" <table id='tableResult' class='table table-striped table-bordered' cellspacing='0'  border='5' width='100%'>";
 
-  });
-  //console.log(err);
+				result +="<thead><tr>  <th>Concept</th>  <th>Type</th>  <th>URI</th> </tr> </thead><tbody>";
+
+				for (var i = 0; i < results.length; i++) {
+					result += "<tr>";
+
+					var uri = results[i].s.value;
+					var concept = uri.split("/").pop();
+					concept = concept.replace('#','');
+//					if (concept.includes("node"))
+//						continue;
+					var object = results[i].o.value;
+					object = object.split("#").pop();
+                    // check type of the object 
+//					if (object !=Property || object !=ObjectProperty|| object !=DatatypeProperty|| object !=Property)
+
+					switch(object) {
+				    case "Property":
+				        break;
+				    case "ObjectProperty":
+				    	object = "Object Property ";
+				    	break;
+				    case "DatatypeProperty":
+				    	object = "Datatype Property ";
+				    	break;
+				    case "Class":
+				    	break;
+				    default:
+				    	var string = object.split("/").pop();
+				    	object = "Individual:{";
+				        object += string;
+				    	object += "}";
+				}
+					
+
+//					// check if concept is a blacknode or rempty string 
+//					if (concept.includes("node")||concept.includes("way")||concept=="")
+//					{
+//					continue;
+//					}
+
+					result += "<td ><a href=\"vocab?id="+uri+"\" target=\"_top\"'>" +concept + "</a></td>";
+					result += "<td>  " + object+ " 	 </td>";
+
+					result += "<td>" + uri+ "</td>";
+					result += "</tr>";
+
+				}
+				result += "</tbody></table>";
+
+				//console.log(result);
+
+
+				titleNew = titleNew;
+				res.render('index', {
+					title: titleNew,
+					resultTable: result
+				});
+
+
+			});
+			//console.log(err);
+		});
+
+	});
 });
-
-});
-});
-  module.exports = router;
+module.exports = router;

@@ -17,12 +17,7 @@ module.exports = function (grunt) {
         file: 'bin/www'
       }
     },
-    watch: {
-      options: {
-        nospawn: true,
-        livereload: reloadPort
-      },
-      server: {
+         server: {
         files: [
           'bin/www',
           'app.js',

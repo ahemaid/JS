@@ -1,0 +1,2 @@
+Update the data for vocab.js
+In the Home page 

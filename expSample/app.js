@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var vocab = require('./routes/vocab');
-
+var contactus = require('./routes/contactus');
 var users = require('./routes/user');
 var visualization = require('./routes/visualization');
 //var favicon = require('favicons');
@@ -37,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/vocab', vocab);
+app.use('/contactus', contactus);
 app.use('/users', users);
 app.use('/visualization', visualization);
 app.use('/visualization1', express.static('views/webvowl'));
