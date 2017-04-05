@@ -56,6 +56,9 @@ router.get("/", function(req, res){
 					var value = results[i].o.value;
 					var  property = results[i].p.value;
 					property = property.split("#").pop();
+					if (property.includes("/"))
+				    	 property = property.split("/").pop();
+
 					if (property =="type")
 						continue;
 					else if (property =="domain")
