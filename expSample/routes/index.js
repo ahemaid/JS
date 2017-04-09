@@ -13,7 +13,7 @@ router.get('/', function(req, res) {
 	var titleNew = 'first';
 	rdfstore.create(function(err, store) {
 		var rdf = fs.readFileSync(
-				'./routes/SingleVoc.ttl'
+				'./routes/NewTtt.ttl'
 		).toString();
 		titleNew = 'second';
 		store.load('text/turtle', rdf, function(s, d) {
